@@ -35,24 +35,31 @@ async function run() {
       res.send(result);
     });
 
+    //   all class
+    app.get("/classes", async (req, res) => {
+      const result = await classCollection.find().sort({ price: -1 }).toArray();
+      res.send(result);
+    });
+
     //   add class
     app.post("/classes", async (req, res) => {
       const newClass = req.body;
       const result = await classCollection.insertOne(newClass);
       res.send(result);
     });
+
+    //   add user
     app.post("/users", async (req, res) => {
-        const user = req.body;
-        const existingUser = await userCollection.findOne({ email: user.email });
-      
-        if (existingUser) {
-          res.status(409).send("Email already exists");
-        } else {
-          const result = await userCollection.insertOne(user);
-          res.send(result);
-        }
-      });
-      
+      const user = req.body;
+      const existingUser = await userCollection.findOne({ email: user.email });
+
+      if (existingUser) {
+        res.status(409).send("Email already exists");
+      } else {
+        const result = await userCollection.insertOne(user);
+        res.send(result);
+      }
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
