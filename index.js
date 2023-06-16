@@ -21,6 +21,7 @@ const client = new MongoClient(uri, {
 });
 async function run() {
   const classCollection = client.db("summerDB").collection("classes");
+  const userCollection = client.db("summerDB").collection("users");
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
@@ -33,11 +34,17 @@ async function run() {
         .toArray();
       res.send(result);
     });
-      
+
     //   add class
     app.post("/classes", async (req, res) => {
       const newClass = req.body;
       const result = await classCollection.insertOne(newClass);
+      res.send(result);
+    });
+    app.post("/users", async (req, res) => {
+      const user = req.body;
+      console.log(user);
+      const result = await userCollection.insertOne(user);
       res.send(result);
     });
 
