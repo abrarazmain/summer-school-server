@@ -25,6 +25,15 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
+    app.get("/popularClasses", async (req, res) => {
+      const result = await classCollection
+        .find()
+        .sort({ price: -1 })
+        .limit(6)
+        .toArray();
+      res.send(result);
+    });
+      
     //   add class
     app.post("/classes", async (req, res) => {
       const newClass = req.body;
