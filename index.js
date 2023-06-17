@@ -40,6 +40,12 @@ async function run() {
       const result = await classCollection.find().sort({ price: -1 }).toArray();
       res.send(result);
     });
+    
+    //   all user
+    app.get("/users", async (req, res) => {
+      const result = await userCollection.find().toArray();
+      res.send(result);
+    });
 
     //   add class
     app.post("/classes", async (req, res) => {
@@ -58,6 +64,51 @@ async function run() {
       } else {
         const result = await userCollection.insertOne(user);
         res.send(result);
+      }
+    });
+
+
+    // update user
+    app.put("/updateUser/:id", async (req, res) => {
+      try {
+        const id = req.params.id;
+        const { position } = req.body; // Extract the "position" value from the request body
+        console.log(id, position);
+        const filter = { _id: new ObjectId(id) };
+        const updateDoc = {
+          $set: {
+            position: position, // Update the "position" field with the extracted value
+          },
+        };
+        const result = await userCollection.updateOne(filter, updateDoc);
+        res.json(result); // Send the result as JSON
+      } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+      }
+    });
+    
+
+
+
+    // updatwe class
+
+    app.put("/updateClass/:id", async (req, res) => {
+      try {
+        const id = req.params.id;
+        const { status } = req.body; // Extract the "status" value from the request body
+        console.log(id, status);
+        const filter = { _id: new ObjectId(id) };
+        const updateDoc = {
+          $set: {
+            status: status, // Update the "status" field with the extracted value
+          },
+        };
+        const result = await classCollection.updateOne(filter, updateDoc);
+        res.json(result); // Send the result as JSON
+      } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
       }
     });
 
