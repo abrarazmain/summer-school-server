@@ -57,7 +57,6 @@ async function run() {
 
     // all instructors
 
-
     app.get("/Instructor", async (req, res) => {
       const query = { position: "instructor" };
       const result = await userCollection.find(query).toArray();
@@ -133,6 +132,24 @@ async function run() {
         // Find the user's selected classes based on their user ID
         const result = await selectedClassCollection.find(query).toArray();
         res.json(result);
+      } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+      }
+    });
+
+    // Delete selected class by class ID
+    app.delete("/selectedClasses/:classId", async (req, res) => {
+      try {
+        const classId = req.params.classId;
+        const query = { classId: classId };
+        const result = await selectedClassCollection.deleteOne(query);
+
+        if (result.deletedCount === 1) {
+          res.json({ message: "Selected class deleted successfully" });
+        } else {
+          res.status(404).json({ error: "Selected class not found" });
+        }
       } catch (error) {
         console.error(error);
         res.status(500).send("Internal Server Error");
