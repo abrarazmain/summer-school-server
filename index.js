@@ -22,6 +22,9 @@ const client = new MongoClient(uri, {
 async function run() {
   const classCollection = client.db("summerDB").collection("classes");
   const userCollection = client.db("summerDB").collection("users");
+  const selectedClassCollection = client
+    .db("summerDB")
+    .collection("selectedClassCollection"); // A
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
@@ -34,13 +37,18 @@ async function run() {
         .toArray();
       res.send(result);
     });
+    app.get("/popularInstructor", async (req, res) => {
+      const query = { position: "instructor" };
+      const result = await userCollection.find(query).limit(6).toArray();
+      res.send(result);
+    });
 
     //   all class
     app.get("/classes", async (req, res) => {
       const result = await classCollection.find().sort({ price: -1 }).toArray();
       res.send(result);
     });
-    
+
     //   all user
     app.get("/users", async (req, res) => {
       const result = await userCollection.find().toArray();
@@ -67,7 +75,6 @@ async function run() {
       }
     });
 
-
     // update user
     app.put("/updateUser/:id", async (req, res) => {
       try {
@@ -87,9 +94,61 @@ async function run() {
         res.status(500).send("Internal Server Error");
       }
     });
-    
 
+    app.post("/selectedClasses", async (req, res) => {
+      try {
+        const { userId, classId } = req.body;
 
+        const newSelectedClass = {
+          userId,
+          classId,
+        };
+
+        const result = await selectedClassCollection.insertOne(
+          newSelectedClass
+        );
+        res.send(result);
+      } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+      }
+    });
+
+    // getselected class
+
+    // Fetch selected classes for a user
+    app.get("/selectedClasses/:userId", async (req, res) => {
+      try {
+        const id = req.params.userId;
+        const query = { userId: id };
+        // Find the user's selected classes based on their user ID
+        const result = await selectedClassCollection.find(query).toArray();
+        res.json(result);
+      } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+      }
+    });
+
+    // update selected class
+    app.post("/selectedClasses", async (req, res) => {
+      try {
+        const { userId, classId } = req.body;
+
+        const newSelectedClass = {
+          userId,
+          classId,
+        };
+
+        const result = await selectedClassCollection.insertOne(
+          newSelectedClass
+        );
+        res.send(result);
+      } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+      }
+    });
 
     // updatwe class
 
@@ -125,9 +184,9 @@ async function run() {
 run().catch(console.dir);
 
 app.get("/", (req, res) => {
-  res.send("toys is running");
+  res.send("server is running");
 });
 
 app.listen(port, () => {
-  console.log(`myToys is running on port ${port}`);
+  console.log(` is running on port ${port}`);
 });
