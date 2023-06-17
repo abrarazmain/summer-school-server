@@ -103,6 +103,7 @@ async function run() {
       }
     });
 
+    // selected class
     app.post("/selectedClasses", async (req, res) => {
       try {
         const { userId, classId } = req.body;
@@ -176,7 +177,7 @@ async function run() {
       }
     });
 
-    // updatwe class
+    // update class
 
     app.put("/updateClass/:id", async (req, res) => {
       try {
