@@ -55,6 +55,15 @@ async function run() {
       res.send(result);
     });
 
+    // all instructors
+
+
+    app.get("/Instructor", async (req, res) => {
+      const query = { position: "instructor" };
+      const result = await userCollection.find(query).toArray();
+      res.send(result);
+    });
+
     //   add class
     app.post("/classes", async (req, res) => {
       const newClass = req.body;
