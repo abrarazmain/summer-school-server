@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 require('dotenv').config()
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
-const sortBy = require("sort-by");
+
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 5000;
@@ -12,7 +12,6 @@ app.use(cors());
 app.use(express.json());
 const uri =
   `mongodb+srv://${process.env.FIREBASE_NAME}:${process.env.FIREBASE_PUSS}@cluster0.wa4fr1c.mongodb.net/?retryWrites=true&w=majority`;
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -28,7 +27,7 @@ async function run() {
     .collection("selectedClassCollection"); // A
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     app.get("/popularClasses", async (req, res) => {
       const result = await classCollection
@@ -88,12 +87,12 @@ async function run() {
     app.put("/updateUser/:id", async (req, res) => {
       try {
         const id = req.params.id;
-        const { position } = req.body; // Extract the "position" value from the request body
-        console.log(id, position);
+        const { position } = req.body; 
+      
         const filter = { _id: new ObjectId(id) };
         const updateDoc = {
           $set: {
-            position: position, // Update the "position" field with the extracted value
+            position: position, 
           },
         };
         const result = await userCollection.updateOne(filter, updateDoc);
@@ -123,14 +122,14 @@ async function run() {
       }
     });
 
-    // getselected class
+    // get selected class
 
-    // Fetch selected classes for a user
+
     app.get("/selectedClasses/:userId", async (req, res) => {
       try {
         const id = req.params.userId;
         const query = { userId: id };
-        // Find the user's selected classes based on their user ID
+       
         const result = await selectedClassCollection.find(query).toArray();
         res.json(result);
       } catch (error) {
@@ -182,16 +181,16 @@ async function run() {
     app.put("/updateClass/:id", async (req, res) => {
       try {
         const id = req.params.id;
-        const { status } = req.body; // Extract the "status" value from the request body
-        console.log(id, status);
+        const { status } = req.body; 
+   
         const filter = { _id: new ObjectId(id) };
         const updateDoc = {
           $set: {
-            status: status, // Update the "status" field with the extracted value
+            status: status,
           },
         };
         const result = await classCollection.updateOne(filter, updateDoc);
-        res.json(result); // Send the result as JSON
+        res.json(result); 
       } catch (error) {
         console.error(error);
         res.status(500).send("Internal Server Error");
@@ -215,5 +214,5 @@ app.get("/", (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(` is running on port ${port}`);
+
 });
